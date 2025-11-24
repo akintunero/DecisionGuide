@@ -327,7 +327,3 @@ if path and st.checkbox("Show decision path"):
     st.subheader("Path taken")
     for step in path:
         st.write("•", step)
-
-# ← no indentation here
-if __name__ == "__main__":
-    main()
