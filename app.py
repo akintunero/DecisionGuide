@@ -1,329 +1,176 @@
+import json
+from pathlib import Path
+
 import streamlit as st
 
-# ----------------------------
-# BASIC PAGE CONFIG
-# ----------------------------
-st.set_page_config(page_title="DecisionGuide", layout="centered")
 
-st.title("DecisionGuide")
-st.write("A simple, logic-based assistant for governance and audit decisions.")
+# ---------- CONFIG ----------
+
+BASE_DIR = Path(__file__).parent
+LOGIC_DIR = BASE_DIR / "logic"
+
+TREE_FILES = {
+    "Incident Reporting": "incident_reporting.json",
+    "Vendor Risk Tiering": "vendor_tiering.json",
+    "DPIA Requirement": "dpia_requirement.json",
+}
 
 
-# ----------------------------
-# TREE 1: INCIDENT REPORTING
-# ----------------------------
-def tree_incident_reporting():
-    st.subheader("Tree 1 – Vendor Incident Reporting")
+# ---------- HELPERS ----------
 
+def load_tree(file_name: str) -> dict:
+    """
+    Load a decision tree from a JSON file in the logic/ folder.
+    """
+    file_path = LOGIC_DIR / file_name
+    with file_path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def run_tree(tree: dict):
+    """
+    Generic engine to run any decision tree defined in JSON.
+
+    JSON structure expected:
+    {
+      "id": "...",
+      "title": "...",
+      "description": "...",
+      "root": "q1",
+      "nodes": {
+        "q1": {
+          "text": "Question?",
+          "type": "choice",
+          "options": {
+            "Yes": {"next": "q2"},
+            "No":  {"decision": "ACCEPT", "explanation": "..."}
+          }
+        },
+        ...
+      }
+    }
+    """
+    nodes = tree.get("nodes", {})
+    current_id = tree.get("root")
     path = []
+    decision = None
+    explanation = None
 
-    q1 = st.radio(
-        "1. Does this vendor process personal or sensitive data on your behalf?",
-        ["Select...", "Yes", "No"],
-        index=0,
-        key="ir_q1",
-    )
-    path.append(f"Q1 → {q1}")
+    # Defensive checks
+    if not current_id or current_id not in nodes:
+        st.error("Tree definition is missing a valid root node.")
+        return None, None, []
 
-    if q1 == "Select...":
-        return None, None, path
+    # Walk through the tree
+    while True:
+        node = nodes.get(current_id)
+        if not node:
+            st.error(f"Node '{current_id}' is missing in the tree.")
+            break
 
-    if q1 == "No":
-        decision = "ACCEPT"
-        explanation = (
-            "The vendor does not process personal or sensitive data on your behalf. "
-            "Strict incident notification requirements are not triggered. You can still "
-            "include a generic incident notification clause as good practice."
-        )
-        return decision, explanation, path
+        node_type = node.get("type", "choice")
 
-    # If Yes:
-    q2 = st.radio(
-        "2. Is there a regulatory or contractual incident/breach reporting requirement "
-        "(for example GDPR/UK GDPR, sector rules, or customer contracts)?",
-        ["Select...", "Yes", "No"],
-        index=0,
-        key="ir_q2",
-    )
-    path.append(f"Q2 → {q2}")
+        if node_type == "choice":
+            question_text = node.get("text", "")
+            options_dict = node.get("options", {})
 
-    if q2 == "Select...":
-        return None, None, path
+            if not options_dict:
+                st.error(f"Node '{current_id}' has no options defined.")
+                break
 
-    if q2 == "No":
-        decision = "ACCEPT_WITH_MITIGATION"
-        explanation = (
-            "There is no explicit regulatory or upstream contractual incident notification "
-            "timeframe, but the vendor processes personal or sensitive data. You should "
-            "define a reasonable notification time window in the contract for governance "
-            "and monitoring purposes."
-        )
-        return decision, explanation, path
+            # Display the question
+            st.markdown(f"**{question_text}**")
+            options = list(options_dict.keys())
 
-    # If Yes:
-    q3 = st.radio(
-        "3. What is your required maximum incident notification timeframe?",
-        ["Select...", "24 hours", "48 hours", "72 hours"],
-        index=0,
-        key="ir_q3",
-    )
-    path.append(f"Q3 → {q3}")
+            # NOTE: Streamlit always selects something by default.
+            # That is fine for now – users can change the option.
+            choice = st.radio(
+                "Select an option:",
+                options,
+                key=f"node_{current_id}",
+            )
 
-    if q3 == "Select...":
-        return None, None, path
+            path.append(f"{question_text} → {choice}")
 
-    # Map to numeric
-    required_hours = int(q3.split()[0])
+            target = options_dict.get(choice, {})
 
-    q4 = st.radio(
-        f"4. Can the vendor contractually commit to notify you within {required_hours} hours?",
-        ["Select...", "Yes", "No"],
-        index=0,
-        key="ir_q4",
-    )
-    path.append(f"Q4 → {q4}")
+            # Move to next node or finish with a decision
+            if "next" in target:
+                current_id = target["next"]
+                continue
+            elif "decision" in target:
+                decision = target.get("decision")
+                explanation = target.get("explanation", "")
+                break
+            else:
+                st.error(f"Option '{choice}' in node '{current_id}' has no 'next' or 'decision'.")
+                break
 
-    if q4 == "Select...":
-        return None, None, path
-
-    if q4 == "Yes":
-        decision = "ACCEPT"
-        explanation = (
-            f"The vendor agrees to a {required_hours}-hour notification window, which "
-            "aligns with your internal standard and regulatory expectations. This supports "
-            "timely internal escalation and external reporting where required."
-        )
-        return decision, explanation, path
-
-    # If vendor cannot meet required window:
-    q5 = st.radio(
-        "5. Can you introduce compensating controls (for example enhanced monitoring, "
-        "stricter SLAs, high-priority incident routing)?",
-        ["Select...", "Yes", "No"],
-        index=0,
-        key="ir_q5",
-    )
-    path.append(f"Q5 → {q5}")
-
-    if q5 == "Select...":
-        return None, None, path
-
-    if q5 == "Yes":
-        decision = "ACCEPT_WITH_MITIGATION"
-        explanation = (
-            "The vendor cannot meet your preferred incident notification timeframe, but "
-            "you can introduce compensating controls such as enhanced monitoring and "
-            "prioritised escalation. The risk is reduced but should be documented and "
-            "periodically reviewed."
-        )
-        return decision, explanation, path
-
-    decision = "REJECT"
-    explanation = (
-        "The vendor cannot meet your required notification timeframe and you cannot put "
-        "effective compensating controls in place. The residual risk remains too high, "
-        "so you should consider alternative vendors or a different solution."
-    )
-    return decision, explanation, path
-
-
-# ----------------------------
-# TREE 2: VENDOR DATA RISK CLASSIFICATION
-# ----------------------------
-def tree_vendor_classification():
-    st.subheader("Tree 2 – Vendor Data Risk Classification")
-
-    path = []
-
-    q1 = st.radio(
-        "1. Does the vendor handle personal data?",
-        ["Select...", "No data", "Personal data", "Special category / highly sensitive data"],
-        index=0,
-        key="vc_q1",
-    )
-    path.append(f"Q1 → {q1}")
-
-    if q1 == "Select...":
-        return None, None, path
-
-    q2 = st.radio(
-        "2. What is the scale of processing?",
-        ["Select...", "Small (few records, low volume)", "Medium", "Large (high volume / continuous)"],
-        index=0,
-        key="vc_q2",
-    )
-    path.append(f"Q2 → {q2}")
-
-    if q2 == "Select...":
-        return None, None, path
-
-    q3 = st.radio(
-        "3. Does the vendor connect to your core systems or internal network?",
-        ["Select...", "Yes", "No"],
-        index=0,
-        key="vc_q3",
-    )
-    path.append(f"Q3 → {q3}")
-
-    if q3 == "Select...":
-        return None, None, path
-
-    # Simple scoring
-    score = 0
-
-    if q1 == "No data":
-        score += 0
-    elif q1 == "Personal data":
-        score += 2
-    elif q1 == "Special category / highly sensitive data":
-        score += 4
-
-    if q2 == "Small (few records, low volume)":
-        score += 1
-    elif q2 == "Medium":
-        score += 2
-    elif q2 == "Large (high volume / continuous)":
-        score += 3
-
-    if q3 == "Yes":
-        score += 2
-    elif q3 == "No":
-        score += 0
-
-    # Map score to risk level
-    if score <= 2:
-        level = "LOW"
-        explanation = (
-            "The vendor has limited exposure to personal or sensitive data and does not "
-            "present significant integration risk. Standard due diligence and basic "
-            "controls should be sufficient."
-        )
-    elif 3 <= score <= 5:
-        level = "MEDIUM"
-        explanation = (
-            "The vendor processes personal data or has moderate integration with your "
-            "environment. A more detailed security and privacy review is appropriate, and "
-            "contractual controls should be clearly defined."
-        )
-    elif 6 <= score <= 7:
-        level = "HIGH"
-        explanation = (
-            "The vendor processes a meaningful volume of personal or sensitive data and/or "
-            "connects to core systems. Enhanced due diligence, stronger controls, and "
-            "ongoing monitoring are recommended."
-        )
-    else:
-        level = "CRITICAL"
-        explanation = (
-            "The vendor processes highly sensitive or special category data at scale and/or "
-            "is tightly integrated with critical systems. Treat this as a critical vendor: "
-            "require comprehensive assessment, senior sign-off, and continuous monitoring."
-        )
-
-    decision = f"RISK TIER: {level}"
-    return decision, explanation, path
-
-
-# ----------------------------
-# TREE 3: DPIA (DATA PROTECTION IMPACT ASSESSMENT) REQUIREMENT
-# ----------------------------
-def tree_dpia():
-    st.subheader("Tree 3 – DPIA Requirement Check")
-
-    path = []
-
-    q1 = st.radio(
-        "1. Does the processing involve systematic and extensive profiling or automated decisions about individuals?",
-        ["Select...", "Yes", "No"],
-        index=0,
-        key="dp_q1",
-    )
-    path.append(f"Q1 → {q1}")
-
-    if q1 == "Select...":
-        return None, None, path
-
-    q2 = st.radio(
-        "2. Will the processing involve large-scale use of special category data "
-        "(for example health, biometrics, ethnicity)?",
-        ["Select...", "Yes", "No"],
-        index=0,
-        key="dp_q2",
-    )
-    path.append(f"Q2 → {q2}")
-
-    if q2 == "Select...":
-        return None, None, path
-
-    q3 = st.radio(
-        "3. Will the processing involve systematic monitoring of publicly accessible areas "
-        "or behaviour (for example CCTV, online tracking)?",
-        ["Select...", "Yes", "No"],
-        index=0,
-        key="dp_q3",
-    )
-    path.append(f"Q3 → {q3}")
-
-    if q3 == "Select...":
-        return None, None, path
-
-    yes_count = sum(1 for ans in [q1, q2, q3] if ans == "Yes")
-
-    if yes_count == 0:
-        decision = "DPIA NOT REQUIRED (LIKELY)"
-        explanation = (
-            "None of the high-risk indicators are triggered. A full DPIA is unlikely to be "
-            "mandatory, but you should document this assessment and keep it under review "
-            "if the scope changes."
-        )
-    elif yes_count == 1:
-        decision = "DPIA RECOMMENDED"
-        explanation = (
-            "At least one high-risk characteristic is present. A DPIA may not be strictly "
-            "mandatory in all jurisdictions, but completing one is recommended to document "
-            "risk analysis and controls."
-        )
-    else:
-        decision = "DPIA REQUIRED"
-        explanation = (
-            "Multiple high-risk characteristics are present. A DPIA should be treated as "
-            "mandatory to assess and document privacy risks and mitigating controls before "
-            "proceeding."
-        )
+        else:
+            st.error(f"Unsupported node type '{node_type}' in node '{current_id}'.")
+            break
 
     return decision, explanation, path
 
 
-# ----------------------------
-# MAIN APP: TREE SELECTION
-# ----------------------------
+# ---------- STREAMLIT APP ----------
 
-tree_choice = st.selectbox(
-    "Select a decision guide to run:",
-    ["Select...", "Incident Reporting", "Vendor Risk Tiering", "DPIA Requirement"],
-)
+def main():
+    st.set_page_config(page_title="DecisionGuide", page_icon="🧭", layout="centered")
 
-decision = None
-explanation = None
-path = []
+    st.title("DecisionGuide")
+    st.write("A simple, logic-based assistant for governance and audit decisions.")
 
-if tree_choice == "Incident Reporting":
-    decision, explanation, path = tree_incident_reporting()
-elif tree_choice == "Vendor Risk Tiering":
-    decision, explanation, path = tree_vendor_classification()
-elif tree_choice == "DPIA Requirement":
-    decision, explanation, path = tree_dpia()
+    st.markdown("---")
 
-st.markdown("---")
+    # Select which tree to run
+    tree_name = st.selectbox(
+        "Select a decision guide to run:",
+        ["Select..."] + list(TREE_FILES.keys()),
+    )
 
-if decision:
-    st.subheader("Decision")
-    st.write(decision)
+    if tree_name == "Select...":
+        st.info("Choose a guide from the dropdown above to begin.")
+        return
 
-if explanation:
-    st.subheader("Explanation")
-    st.write(explanation)
-if path and st.checkbox("Show decision path"):
-    st.subheader("Path taken")
-    for step in path:
-        st.write("•", step)
+    # Load the corresponding JSON tree
+    file_name = TREE_FILES.get(tree_name)
+    try:
+        tree = load_tree(file_name)
+    except FileNotFoundError:
+        st.error(f"Could not find logic file for '{tree_name}'. Expected '{file_name}'.")
+        return
+    except json.JSONDecodeError:
+        st.error(f"Logic file '{file_name}' is not valid JSON.")
+        return
+
+    # Show tree metadata
+    st.markdown(f"### {tree.get('title', tree_name)}")
+    if tree.get("description"):
+        st.write(tree["description"])
+
+    st.markdown("---")
+
+    # Run the tree
+    decision, explanation, path = run_tree(tree)
+
+    st.markdown("---")
+
+    # Output
+    if decision:
+        st.subheader("Decision")
+        st.write(decision)
+
+    if explanation:
+        st.subheader("Explanation")
+        st.write(explanation)
+
+    if path:
+        if st.checkbox("Show decision path"):
+            st.subheader("Path taken")
+            for step in path:
+                st.write("•", step)
+
+
+if __name__ == "__main__":
+    main()
