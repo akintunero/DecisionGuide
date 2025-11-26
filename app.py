@@ -8,193 +8,350 @@ from utils.export import export_to_pdf, export_to_json, export_to_text, get_file
 
 st.set_page_config(
     page_title="DecisionGuide",
-    page_icon="🎯",
+    page_icon="◈",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for professional styling
+# Minimalist Luxury CSS
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Global styling */
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+    
     /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Custom color scheme */
-    .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
+    /* Elegant background */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: #fafafa;
     }
     
-    /* Hero section styling */
+    /* Minimalist hero */
     .hero-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 4rem 2rem;
-        border-radius: 20px;
         text-align: center;
-        color: white;
-        margin-bottom: 3rem;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        padding: 6rem 2rem 4rem 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .logo-mark {
+        font-size: 4rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
     }
     
     .hero-title {
         font-size: 3.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        font-weight: 300;
+        letter-spacing: -1px;
+        color: #1a1a1a;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-title strong {
+        font-weight: 700;
     }
     
     .hero-subtitle {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        opacity: 0.95;
-    }
-    
-    .hero-description {
-        font-size: 1.1rem;
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: #666;
+        line-height: 1.8;
         max-width: 700px;
-        margin: 0 auto;
-        opacity: 0.9;
+        margin: 0 auto 3rem auto;
     }
     
-    /* Feature cards */
+    .divider {
+        width: 60px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #1a1a1a, transparent);
+        margin: 3rem auto;
+        opacity: 0.3;
+    }
+    
+    /* Feature cards - minimal */
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 3rem auto;
+        padding: 0 2rem;
+    }
+    
     .feature-card {
         background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        height: 100%;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        padding: 2.5rem 2rem;
+        border: 1px solid #e8e8e8;
+        text-align: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        border-color: #1a1a1a;
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
     }
     
     .feature-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
     }
     
     .feature-title {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #667eea;
-        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.3px;
     }
     
     .feature-text {
+        font-size: 0.95rem;
         color: #666;
-        font-size: 1rem;
-        line-height: 1.6;
+        line-height: 1.7;
+        font-weight: 400;
     }
     
-    /* Assessment cards */
+    /* Section headers */
+    .section-header {
+        text-align: center;
+        max-width: 800px;
+        margin: 5rem auto 3rem auto;
+        padding: 0 2rem;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        font-weight: 400;
+    }
+    
+    /* Assessment cards - minimal luxury */
+    .assessment-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+    
     .assessment-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2rem;
-        border-radius: 15px;
-        color: white;
-        height: 250px;
+        background: white;
+        border: 1px solid #e8e8e8;
+        padding: 3rem 2rem;
+        min-height: 280px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .assessment-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #1a1a1a, #666);
+        transform: scaleX(0);
         transition: transform 0.3s ease;
     }
     
+    .assessment-card:hover::before {
+        transform: scaleX(1);
+    }
+    
     .assessment-card:hover {
-        transform: translateY(-5px);
+        border-color: #1a1a1a;
+        transform: translateY(-6px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+    }
+    
+    .assessment-number {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #999;
+        letter-spacing: 2px;
+        margin-bottom: 1.5rem;
     }
     
     .assessment-title {
         font-size: 1.5rem;
-        font-weight: 700;
+        font-weight: 600;
+        color: #1a1a1a;
         margin-bottom: 1rem;
+        letter-spacing: -0.5px;
     }
     
     .assessment-description {
         font-size: 0.95rem;
-        opacity: 0.9;
+        color: #666;
+        line-height: 1.7;
         flex-grow: 1;
     }
     
-    /* Section styling */
-    .section-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        text-align: center;
-        margin: 3rem 0 2rem 0;
-        color: #2d3748;
+    /* Use cases - refined */
+    .use-case-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 3rem auto;
+        padding: 0 2rem;
     }
     
-    .section-subtitle {
-        text-align: center;
-        color: #666;
-        font-size: 1.1rem;
-        margin-bottom: 3rem;
-    }
-    
-    /* Use case boxes */
-    .use-case-box {
+    .use-case-card {
         background: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        border-left: 4px solid #667eea;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border: 1px solid #e8e8e8;
+        padding: 2.5rem;
     }
     
     .use-case-title {
         font-size: 1.2rem;
-        font-weight: 700;
-        color: #667eea;
-        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .use-case-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .use-case-list li {
+        padding: 0.75rem 0;
+        color: #666;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #f5f5f5;
+        line-height: 1.6;
+    }
+    
+    .use-case-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .use-case-list li::before {
+        content: '—';
+        margin-right: 0.75rem;
+        color: #1a1a1a;
+        font-weight: 600;
     }
     
     /* CTA section */
     .cta-section {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        padding: 3rem;
-        border-radius: 20px;
-        text-align: center;
+        background: #1a1a1a;
         color: white;
-        margin: 3rem 0;
+        text-align: center;
+        padding: 5rem 2rem;
+        margin: 6rem 0 4rem 0;
     }
     
     .cta-title {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .cta-text {
+        font-size: 1.1rem;
+        color: #999;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.8;
     }
     
     /* Footer */
-    .custom-footer {
+    .footer {
         text-align: center;
-        padding: 2rem;
-        color: #666;
-        margin-top: 3rem;
+        padding: 4rem 2rem;
+        color: #999;
+        max-width: 800px;
+        margin: 0 auto;
     }
     
-    /* Buttons */
+    .footer-links {
+        margin-bottom: 2rem;
+    }
+    
+    .footer-links a {
+        color: #1a1a1a;
+        text-decoration: none;
+        margin: 0 1.5rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: opacity 0.2s ease;
+    }
+    
+    .footer-links a:hover {
+        opacity: 0.6;
+    }
+    
+    .footer-note {
+        font-size: 0.9rem;
+        color: #666;
+        line-height: 1.8;
+        margin-top: 2rem;
+    }
+    
+    /* Buttons - minimalist */
     .stButton>button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #1a1a1a;
         color: white;
-        border: none;
-        padding: 0.75rem 2rem;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 10px;
+        border: 1px solid #1a1a1a;
+        padding: 1rem 2.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
         transition: all 0.3s ease;
+        text-transform: uppercase;
     }
     
     .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        background: white;
+        color: #1a1a1a;
+        border: 1px solid #1a1a1a;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .feature-grid,
+        .assessment-grid,
+        .use-case-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -217,179 +374,137 @@ def load_trees():
 
 
 def show_landing_page():
-    """Display the colorful professional landing page"""
+    """Minimalist luxury landing page"""
     
     # Hero Section
     st.markdown("""
     <div class='hero-section'>
-        <div class='hero-title'>🎯 DecisionGuide</div>
-        <div class='hero-subtitle'>Open-source assessment framework for GRC professionals</div>
-        <div class='hero-description'>
-            Make consistent, defensible decisions through structured logic flows. 
-            Built with empathy for professionals who need clarity in complex assessments.
+        <div class='logo-mark'>◈</div>
+        <h1 class='hero-title'><strong>Decision</strong>Guide</h1>
+        <p class='hero-subtitle'>
+            Open-source assessment framework for GRC professionals.
+            Make consistent, defensible decisions through structured logic flows.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Divider
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+    
+    # Features
+    st.markdown("""
+    <div class='feature-grid'>
+        <div class='feature-card'>
+            <div class='feature-icon'>○</div>
+            <div class='feature-title'>Transparent</div>
+            <div class='feature-text'>Clear decision paths with complete reasoning trails</div>
+        </div>
+        <div class='feature-card'>
+            <div class='feature-icon'>◇</div>
+            <div class='feature-title'>Private</div>
+            <div class='feature-text'>Zero-document approach, all processing local</div>
+        </div>
+        <div class='feature-card'>
+            <div class='feature-icon'>◈</div>
+            <div class='feature-title'>Professional</div>
+            <div class='feature-text'>Audit-ready exports in multiple formats</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
-    # Feature Cards
-    st.markdown("<div class='section-title'>Why DecisionGuide?</div>", unsafe_allow_html=True)
-    st.markdown("<div class='section-subtitle'>Everything you need for professional GRC assessments</div>", unsafe_allow_html=True)
+    # Section Header
+    st.markdown("""
+    <div class='section-header'>
+        <div class='divider'></div>
+        <h2 class='section-title'>Assessments</h2>
+        <p class='section-subtitle'>Choose a framework to begin your evaluation</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("""
-        <div class='feature-card'>
-            <div class='feature-icon'>🔍</div>
-            <div class='feature-title'>Transparent Logic</div>
-            <div class='feature-text'>
-                See exactly how decisions are reached with clear, step-by-step reasoning. 
-                Every path is documented and traceable.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
-        <div class='feature-card'>
-            <div class='feature-icon'>🔒</div>
-            <div class='feature-title'>Privacy First</div>
-            <div class='feature-text'>
-                Zero-document approach means no file uploads, no data collection. 
-                All processing happens locally in your browser.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        st.markdown("""
-        <div class='feature-card'>
-            <div class='feature-icon'>📄</div>
-            <div class='feature-title'>Audit Ready</div>
-            <div class='feature-text'>
-                Export professional reports in PDF, JSON, or TXT formats. 
-                Complete audit trails for compliance documentation.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    
-    # Available Assessments
-    st.markdown("<div class='section-title'>📋 Available Assessments</div>", unsafe_allow_html=True)
-    st.markdown("<div class='section-subtitle'>Choose an assessment to get started</div>", unsafe_allow_html=True)
-    
+    # Assessment Cards
     trees = load_trees()
     
-    # Create gradient colors for cards
-    gradients = [
-        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-        "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-    ]
+    assessment_numbers = ["01", "02", "03"]
     
-    cols = st.columns(min(len(trees), 3))
-    
+    cards_html = "<div class='assessment-grid'>"
     for idx, (tree_id, tree_data) in enumerate(trees.items()):
-        with cols[idx % 3]:
-            gradient = gradients[idx % len(gradients)]
-            
-            st.markdown(f"""
-            <div class='assessment-card' style='background: {gradient};'>
-                <div>
-                    <div class='assessment-title'>{tree_data.get('title', 'Assessment')}</div>
-                    <div class='assessment-description'>{tree_data.get('description', '')}</div>
-                </div>
+        cards_html += f"""
+        <div class='assessment-card'>
+            <div>
+                <div class='assessment-number'>{assessment_numbers[idx] if idx < len(assessment_numbers) else f"0{idx+1}"}</div>
+                <div class='assessment-title'>{tree_data.get('title', 'Assessment')}</div>
+                <div class='assessment-description'>{tree_data.get('description', '')}</div>
             </div>
-            """, unsafe_allow_html=True)
-            
-            if st.button(f"Start Assessment →", key=f"start_{tree_id}", use_container_width=True):
+        </div>
+        """
+    cards_html += "</div>"
+    
+    st.markdown(cards_html, unsafe_allow_html=True)
+    
+    # Buttons for assessments
+    cols = st.columns(len(trees))
+    for idx, (tree_id, tree_data) in enumerate(trees.items()):
+        with cols[idx]:
+            if st.button(f"Begin", key=f"start_{tree_id}", use_container_width=True):
                 st.session_state.selected_tree = tree_id
                 st.session_state.show_landing = False
                 st.rerun()
-            
-            st.markdown("<br>", unsafe_allow_html=True)
     
     # Use Cases Section
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>🎯 Who Is This For?</div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div class='section-header'>
+        <div class='divider'></div>
+        <h2 class='section-title'>Built For Professionals</h2>
+    </div>
+    """, unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("""
-        <div class='use-case-box'>
-            <div class='use-case-title'>👨‍💼 For Auditors</div>
-            <ul>
-                <li>Standardize assessment approaches across teams</li>
-                <li>Generate consistent, defensible decisions</li>
-                <li>Produce audit-ready documentation instantly</li>
+    st.markdown("""
+    <div class='use-case-grid'>
+        <div class='use-case-card'>
+            <div class='use-case-title'>Auditors & Compliance</div>
+            <ul class='use-case-list'>
+                <li>Standardize assessment approaches</li>
+                <li>Generate defensible documentation</li>
+                <li>Ensure regulatory compliance</li>
             </ul>
         </div>
-        
-        <div class='use-case-box'>
-            <div class='use-case-title'>📊 For Risk Managers</div>
-            <ul>
-                <li>Classify vendors systematically</li>
-                <li>Tier risks consistently across organization</li>
-                <li>Document decision rationale clearly</li>
+        <div class='use-case-card'>
+            <div class='use-case-title'>Risk & Security Teams</div>
+            <ul class='use-case-list'>
+                <li>Classify risks systematically</li>
+                <li>Document decision rationale</li>
+                <li>Maintain audit trails</li>
             </ul>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
     
-    with col2:
-        st.markdown("""
-        <div class='use-case-box'>
-            <div class='use-case-title'>✅ For Compliance Teams</div>
-            <ul>
-                <li>Determine regulatory requirements quickly</li>
-                <li>Apply jurisdiction-specific rules accurately</li>
-                <li>Maintain complete audit trails</li>
-            </ul>
-        </div>
-        
-        <div class='use-case-box'>
-            <div class='use-case-title'>🛡️ For Security Teams</div>
-            <ul>
-                <li>Assess incident severity objectively</li>
-                <li>Make reporting decisions confidently</li>
-                <li>Document incident response choices</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # CTA Section
+    # CTA
     st.markdown("""
     <div class='cta-section'>
-        <div class='cta-title'>Ready to Make Better Decisions?</div>
-        <p style='font-size: 1.1rem; margin-bottom: 1.5rem;'>
-            Join GRC professionals using DecisionGuide for consistent, defensible assessments
+        <h2 class='cta-title'>Ready to begin?</h2>
+        <p class='cta-text'>
+            Join GRC professionals using DecisionGuide for consistent, 
+            transparent assessments backed by structured logic.
         </p>
     </div>
     """, unsafe_allow_html=True)
     
     # Footer
     st.markdown("""
-    <div class='custom-footer'>
-        <p style='font-size: 1.1rem; margin-bottom: 0.5rem;'>
-            <strong>DecisionGuide: Making structured, smart decisions—one at a time.</strong>
+    <div class='footer'>
+        <div class='footer-links'>
+            <a href='https://github.com/Adeshola3/DecisionGuide' target='_blank'>GitHub</a>
+            <a href='https://github.com/Adeshola3/DecisionGuide/issues' target='_blank'>Contribute</a>
+            <a href='#'>Documentation</a>
+        </div>
+        <div class='divider'></div>
+        <p class='footer-note'>
+            <strong>DecisionGuide</strong> — Making structured, smart decisions, one at a time.<br>
+            Built with empathy for professionals who need clarity in complex assessments.
         </p>
-        <p style='margin-bottom: 1rem;'>
-            Built with empathy for students and professionals who need clarity in complex assessments.
-        </p>
-        <p>
-            <a href='https://github.com/Adeshola3/DecisionGuide' target='_blank' 
-               style='color: #667eea; text-decoration: none; font-weight: 600;'>
-                ⭐ Star on GitHub
-            </a>
-            &nbsp;|&nbsp;
-            <a href='https://github.com/Adeshola3/DecisionGuide/issues' target='_blank' 
-               style='color: #667eea; text-decoration: none; font-weight: 600;'>
-                💬 Contribute
-            </a>
-        </p>
-        <p style='margin-top: 1.5rem; font-size: 0.9rem; color: #999;'>
-            Open source • MIT License • Made with 💙
+        <p style='margin-top: 2rem; font-size: 0.85rem; color: #999;'>
+            Open Source • MIT License
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -405,7 +520,7 @@ def traverse_tree_interactive(tree, node_id, answers, path_so_far):
     
     if node_type == "choice":
         current_question = len(answers) + 1
-        st.info(f"📊 Question {current_question}")
+        st.info(f"Question {current_question}")
         st.markdown("---")
         
         options = list(node["options"].keys())
@@ -452,7 +567,7 @@ def show_assessment_page():
     trees = load_trees()
     
     # Back button
-    if st.button("← Back to Home"):
+    if st.button("← Home"):
         st.session_state.show_landing = True
         st.session_state.pop('selected_tree', None)
         st.rerun()
@@ -498,23 +613,23 @@ def show_assessment_page():
         }
 
     if st.session_state[result_key] is not None:
-        st.success("✅ Assessment Complete!")
+        st.success("✓ Assessment Complete")
         
         st.markdown("---")
         
         result = st.session_state[result_key]
         
         st.markdown("### Result")
-        st.write(f"**Decision code:** {result['decision']}")
+        st.write(f"**Decision:** {result['decision']}")
         if result['explanation']:
             st.write(result['explanation'])
 
-        st.markdown("### Path taken")
+        st.markdown("### Decision Path")
         for step in result['path']:
-            st.write(f"- {step}")
+            st.write(f"— {step}")
         
         st.markdown("---")
-        st.markdown("### Export Options")
+        st.markdown("### Export")
         
         col1, col2, col3, col4 = st.columns(4)
         
@@ -526,7 +641,7 @@ def show_assessment_page():
                 result['path']
             )
             st.download_button(
-                label="📄 Download PDF",
+                label="PDF",
                 data=pdf_buffer,
                 file_name=get_filename(tree.get("title", "Assessment"), "pdf"),
                 mime="application/pdf"
@@ -540,7 +655,7 @@ def show_assessment_page():
                 result['path']
             )
             st.download_button(
-                label="📋 Download JSON",
+                label="JSON",
                 data=json_data,
                 file_name=get_filename(tree.get("title", "Assessment"), "json"),
                 mime="application/json"
@@ -554,14 +669,14 @@ def show_assessment_page():
                 result['path']
             )
             st.download_button(
-                label="📝 Download TXT",
+                label="TXT",
                 data=text_data,
                 file_name=get_filename(tree.get("title", "Assessment"), "txt"),
                 mime="text/plain"
             )
         
         with col4:
-            if st.button("🔄 Start over"):
+            if st.button("Reset"):
                 st.session_state[answers_key] = {}
                 st.session_state[result_key] = None
                 st.rerun()
