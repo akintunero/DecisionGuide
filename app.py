@@ -805,7 +805,7 @@ def show_landing_page():
             <div class='feature-icon-wrapper'>🔍</div>
             <h3 class='feature-title'>Crystal Clear Logic</h3>
             <p class='feature-description'>
-                Every decision is traced step-by-step. No black boxes, no mysteries—just transparent, 
+                Every decision is traced step-by-step. No black boxes, no mysteries; just transparent, 
                 defensible reasoning you can confidently present to stakeholders.
             </p>
         </div>
@@ -912,7 +912,7 @@ def show_landing_page():
                 <h3 class='use-case-title'>Auditors</h3>
             </div>
             <ul>
-                <li>Standardize assessment methodology across teams</li>
+                <li>Standardise assessment methodology across teams</li>
                 <li>Generate consistent, repeatable audit decisions</li>
                 <li>Document complete reasoning for findings</li>
                 <li>Produce audit-ready evidence instantly</li>
@@ -957,7 +957,7 @@ def show_landing_page():
                 <li>Rate incident severity objectively</li>
                 <li>Make reporting decisions with confidence</li>
                 <li>Document security response choices</li>
-                <li>Standardize threat classification</li>
+                <li>Standardise threat classification</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
