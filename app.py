@@ -25,10 +25,45 @@ def load_trees():
     return trees
 
 
-def traverse_tree_interactive(tree, node_id, answers, path_so_far):
+def count_questions_in_path(tree, node_id, visited=None):
+    """
+    Count total questions in a decision path.
+    This gives us an estimate of progress.
+    """
+    if visited is None:
+        visited = set()
+    
+    if node_id in visited:
+        return 0
+    
+    visited.add(node_id)
+    nodes = tree["nodes"]
+    
+    if node_id not in nodes:
+        return 0
+    
+    node = nodes[node_id]
+    
+    if node.get("type") != "choice":
+        return 0
+    
+    # Count this question
+    count = 1
+    
+    # Check all branches
+    max_additional = 0
+    for option_data in node.get("options", {}).values():
+        if "next" in option_data:
+            additional = count_questions_in_path(tree, option_data["next"], visited.copy())
+            max_additional = max(max_additional, additional)
+    
+    return count + max_additional
+
+
+def traverse_tree_interactive(tree, node_id, answers, path_so_far, question_count):
     """
     Interactively traverse the tree.
-    Shows one question at a time.
+    Shows one question at a time with progress indicator.
     Returns (decision_code, explanation, full_path) when complete, or (None, None, path) if still in progress.
     """
     nodes = tree["nodes"]
@@ -38,6 +73,26 @@ def traverse_tree_interactive(tree, node_id, answers, path_so_far):
     node_type = node.get("type", "choice")
     
     if node_type == "choice":
+        # Calculate progress
+        current_question = len(answers) + 1
+        total_questions = count_questions_in_path(tree, tree["root"])
+        
+        # Show progress indicator
+        if total_questions > 1:
+            progress_percentage = min((current_question / total_questions) * 100, 100)
+            
+            # Progress bar
+            st.progress(progress_percentage / 100)
+            
+            # Question counter
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.caption(f"Question {current_question} of ~{total_questions}")
+            with col2:
+                st.caption(f"{int(progress_percentage)}% complete")
+            
+            st.markdown("---")
+        
         options = list(node["options"].keys())
         
         # Check if this question was already answered
@@ -73,7 +128,7 @@ def traverse_tree_interactive(tree, node_id, answers, path_so_far):
         
         # Otherwise, continue to next node
         next_node = selected_branch["next"]
-        return traverse_tree_interactive(tree, next_node, answers, new_path)
+        return traverse_tree_interactive(tree, next_node, answers, new_path, question_count + 1)
     
     elif node_type == "text":
         st.markdown(node_label)
@@ -126,7 +181,8 @@ def main():
         tree, 
         tree["root"], 
         answers, 
-        []
+        [],
+        0
     )
 
     # If we have a decision, show it
@@ -140,6 +196,13 @@ def main():
     # Display result if available
     if st.session_state[result_key] is not None:
         st.markdown("---")
+        
+        # Show 100% completion
+        st.progress(1.0)
+        st.success("✅ Assessment Complete!")
+        
+        st.markdown("---")
+        
         result = st.session_state[result_key]
         
         st.markdown("### Result")
