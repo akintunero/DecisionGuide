@@ -18,12 +18,11 @@
       }
     },
     "high_risk_characteristics": {
-      "text": "Does the processing involve any of the following high-risk characteristics?\\n\\n- Systematic monitoring (e.g. CCTV, tracking, monitoring behaviour)\\n- Large-scale processing of personal data\\n- Special category / highly sensitive data (health, biometrics, children, financial, criminal)\\n- Vulnerable individuals or power imbalance (patients, employees, students, beneficiaries)\\n- Use of new or intrusive technology (AI profiling, behavioural scoring, monitoring tools)",
+      "text": "Does the processing involve any of the following high-risk characteristics?\n\n- Systematic monitoring (e.g. CCTV, tracking, monitoring behaviour)\n- Large-scale processing of personal data\n- Special category / highly sensitive data (health, biometrics, children, financial, criminal)\n- Vulnerable individuals or power imbalance (patients, employees, students, beneficiaries)\n- Use of new or intrusive technology (AI profiling, behavioural scoring, monitoring tools)",
       "type": "choice",
       "options": {
         "Yes, one or more apply": {
-          "decision": "DPIA_REQUIRED",
-          "explanation": "Your processing has one or more high-risk characteristics. A DPIA is strongly recommended and may be mandatory under many data protection regimes."
+          "next": "jurisdiction"
         },
         "No, none apply": {
           "next": "borderline_context"
@@ -35,12 +34,37 @@
       "type": "choice",
       "options": {
         "Yes, it still feels risky": {
-          "decision": "DPIA_RECOMMENDED",
-          "explanation": "A formal DPIA may not be strictly mandatory, but documenting a DPIA-style assessment will help you evidence that you considered risks and mitigations."
+          "next": "jurisdiction"
         },
         "No, it is clearly low risk": {
           "decision": "NO_DPIA_FORMAL",
           "explanation": "Based on your answers, a formal DPIA is unlikely to be required. Still keep a simple record of your reasoning and basic controls."
+        }
+      }
+    },
+    "jurisdiction": {
+      "text": "Which jurisdiction are you mainly working under?",
+      "type": "choice",
+      "options": {
+        "UK / ICO (UK GDPR / DPA 2018)": {
+          "decision": "DPIA_REQUIRED_UK",
+          "explanation": "**DPIA Required**\n\nYour processing has high-risk characteristics. A DPIA is strongly recommended and may be mandatory under UK GDPR.\n\n**UK-Specific Guidance:**\n- Check UK GDPR Article 35 and ICO guidance on when a DPIA is mandatory\n- If CCTV, large-scale monitoring, or profiling is involved, verify against ICO's DPIA checklists\n- Ensure documentation follows ICO's recommended DPIA template\n- Consult with your DPO where required"
+        },
+        "EU / EDPB (EU GDPR)": {
+          "decision": "DPIA_REQUIRED_EU",
+          "explanation": "**DPIA Required**\n\nYour processing has high-risk characteristics. A DPIA is mandatory under EU GDPR Article 35.\n\n**EU-Specific Guidance:**\n- Refer to EU GDPR Article 35 and EDPB guidelines on DPIAs\n- Check your processing activity against your supervisory authority's DPIA 'blacklist' and 'whitelist'\n- Ensure you can demonstrate consultation with the DPO where required\n- Consider if prior consultation with supervisory authority is needed"
+        },
+        "US (e.g. HIPAA / State privacy laws)": {
+          "decision": "RISK_ASSESSMENT_REQUIRED_US",
+          "explanation": "**Privacy Risk Assessment Recommended**\n\nWhile 'DPIA' is EU/UK terminology, similar assessments exist under US law.\n\n**US-Specific Guidance:**\n- Map your assessment to HIPAA Security Rule risk analysis requirements where health data is involved\n- Consider state-level requirements (e.g. CPRA) for high-risk processing and impact assessments\n- Document privacy risks, impacts, and mitigations for regulatory compliance\n- Consider FTC privacy guidance for unfair/deceptive practices"
+        },
+        "Nigeria (NDPR)": {
+          "decision": "DPIA_REQUIRED_NIGERIA",
+          "explanation": "**Data Protection Impact Assessment Required**\n\nYour processing involves high-risk characteristics requiring assessment under NDPR.\n\n**Nigeria-Specific Guidance:**\n- Map your assessment against NDPR requirements for high-risk data processing\n- Check NITDA guidance and sector-specific rules for impact assessment expectations\n- Ensure cross-border transfer risks are addressed explicitly\n- Consider registration requirements with NITDA\n- Document compliance with lawful basis and consent requirements"
+        },
+        "Other / Mixed": {
+          "decision": "DPIA_RECOMMENDED_GENERIC",
+          "explanation": "**Privacy Impact Assessment Recommended**\n\nYour processing has high-risk characteristics. A structured privacy assessment is strongly recommended.\n\n**General Guidance:**\n- Align your assessment with any local data protection law or sector regulation\n- Where no formal DPIA requirement exists, treat this as a structured privacy and risk assessment\n- Document assumptions, risks, and mitigations so they can stand up to regulatory or customer scrutiny\n- Consider international standards (ISO 29134) for privacy impact assessments\n- Engage legal counsel familiar with your jurisdiction"
         }
       }
     }
