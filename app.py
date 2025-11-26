@@ -77,19 +77,20 @@ def traverse_tree_interactive(tree, node_id, answers, path_so_far, question_coun
         current_question = len(answers) + 1
         total_questions = count_questions_in_path(tree, tree["root"])
         
-        # Show progress indicator
+        # Show BIG VISIBLE progress indicator
         if total_questions > 1:
             progress_percentage = min((current_question / total_questions) * 100, 100)
             
-            # Progress bar
+            # Progress header
+            st.markdown(f"### 📊 Progress: Question {current_question} of {total_questions}")
+            
+            # Big progress bar
             st.progress(progress_percentage / 100)
             
-            # Question counter
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                st.caption(f"Question {current_question} of ~{total_questions}")
+            # Percentage display
+            col1, col2, col3 = st.columns([1, 2, 1])
             with col2:
-                st.caption(f"{int(progress_percentage)}% complete")
+                st.markdown(f"<h3 style='text-align: center;'>{int(progress_percentage)}% Complete</h3>", unsafe_allow_html=True)
             
             st.markdown("---")
         
@@ -163,7 +164,6 @@ def main():
         st.markdown(tree["description"])
 
     st.markdown("---")
-    st.markdown("### Answer the questions")
 
     # Initialize session state for this tree
     answers_key = f"answers_{selected_tree_id}"
@@ -195,11 +195,10 @@ def main():
 
     # Display result if available
     if st.session_state[result_key] is not None:
-        st.markdown("---")
-        
-        # Show 100% completion
+        # Show 100% completion with celebration
+        st.markdown("### 📊 Progress: Assessment Complete!")
         st.progress(1.0)
-        st.success("✅ Assessment Complete!")
+        st.success("✅ 100% Complete!")
         
         st.markdown("---")
         
