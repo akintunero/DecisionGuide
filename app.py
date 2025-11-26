@@ -15,7 +15,6 @@ st.set_page_config(
 
 # Custom CSS for professional styling
 st.markdown("""
-st.markdown("""
 <style>
     /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
@@ -24,6 +23,35 @@ st.markdown("""
     /* Light background */
     .stApp {
         background: #fafafa;
+    }
+    
+    /* Make sure all Streamlit text is dark and visible */
+    .stMarkdown, .stMarkdown p, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+        color: #2d3748 !important;
+    }
+    
+    /* Radio buttons and labels */
+    .stRadio > label {
+        color: #2d3748 !important;
+        font-weight: 600 !important;
+    }
+    
+    .stRadio > div {
+        color: #2d3748 !important;
+    }
+    
+    .stRadio [role="radiogroup"] label {
+        color: #2d3748 !important;
+    }
+    
+    /* Titles */
+    h1, h2, h3, h4, h5, h6 {
+        color: #2d3748 !important;
+    }
+    
+    /* Info boxes */
+    .stAlert {
+        color: #2d3748 !important;
     }
     
     /* Hero section styling */
@@ -228,6 +256,23 @@ st.markdown("""
         box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
     
+    /* Download buttons */
+    .stDownloadButton>button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .stDownloadButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
     /* Responsive Design */
     @media (max-width: 768px) {
         .hero-title {
@@ -268,6 +313,7 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
 
 LOGIC_DIR = Path(__file__).parent / "logic"
 
