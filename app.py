@@ -13,281 +13,287 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Dark Elegant Design
+# Custom CSS for professional styling
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    
-    * {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    
     /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Dark background */
+    /* Light background */
     .stApp {
-        background: #1a2332;
+        background: #fafafa;
     }
     
-    /* Force white text for assessment page */
-    .stMarkdown, .stMarkdown p {
-        color: #e8eaed !important;
-    }
-    
-    h1, h2, h3 {
-        color: #ffffff !important;
+    /* Make sure all text is visible */
+    .stMarkdown, .stMarkdown p, h1, h2, h3, h4, h5, h6 {
+        color: #2d3748 !important;
     }
     
     .stRadio label, .stRadio span {
-        color: #e8eaed !important;
+        color: #2d3748 !important;
         font-weight: 500 !important;
     }
     
     div[data-baseweb="notification"] * {
-        color: #1a2332 !important;
-        font-weight: 500 !important;
+        color: #1565c0 !important;
     }
     
-    /* Hero Section - Dark Elegant */
-    .hero-container {
-        background: linear-gradient(135deg, #1e3a5f 0%, #1a2332 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 3rem 2rem;
-    }
-    
-    .hero-content {
-        max-width: 700px;
+    /* Hero section styling */
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 4rem 2rem;
+        border-radius: 20px;
         text-align: center;
-    }
-    
-    .hero-logo {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 2rem auto;
-        background: transparent;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 5rem;
+        color: white;
+        margin-bottom: 3rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     }
     
     .hero-title {
-        font-size: 3.5rem;
-        font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 1.5rem;
-        letter-spacing: -1px;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        color: white;
+        word-wrap: break-word;
     }
     
     .hero-subtitle {
-        font-size: 1.1rem;
-        color: #d4af76;
-        font-weight: 500;
-        letter-spacing: 4px;
-        text-transform: uppercase;
-        margin-bottom: 3rem;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        opacity: 0.95;
+        color: white;
     }
     
-    /* Feature Badges */
-    .feature-badges {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 3rem;
+    .hero-description {
+        font-size: 1.05rem;
+        max-width: 700px;
+        margin: 0 auto;
+        opacity: 0.9;
+        color: white;
+        line-height: 1.6;
     }
     
-    .feature-badge {
-        background: rgba(212, 175, 118, 0.15);
-        border: 2px solid rgba(212, 175, 118, 0.3);
-        border-radius: 50px;
-        padding: 1.2rem 2rem;
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        transition: all 0.3s ease;
+    /* Feature cards */
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     
-    .feature-badge:hover {
-        background: rgba(212, 175, 118, 0.25);
-        border-color: rgba(212, 175, 118, 0.5);
-        transform: translateX(10px);
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
     
     .feature-icon {
-        width: 50px;
-        height: 50px;
-        background: #d4af76;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        flex-shrink: 0;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 0.5rem;
     }
     
     .feature-text {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #ffffff;
-        text-align: left;
+        color: #666;
+        font-size: 1rem;
+        line-height: 1.6;
     }
     
-    /* Description */
-    .hero-description {
-        font-size: 1.1rem;
-        color: #b8c4d6;
-        line-height: 1.8;
-        margin-bottom: 3rem;
-    }
-    
-    /* Buttons */
-    .stButton>button {
-        background: #d4af76;
-        color: #1a2332;
-        border: none;
-        padding: 1.2rem 3rem;
-        font-size: 1.1rem;
-        font-weight: 700;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        width: 100%;
-        max-width: 400px;
-        text-transform: capitalize;
-    }
-    
-    .stButton>button:hover {
-        background: #e8c589;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(212, 175, 118, 0.4);
-    }
-    
-    /* Assessment Grid */
-    .assessment-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 3rem auto;
-        padding: 0 2rem;
-    }
-    
+    /* Assessment cards */
     .assessment-card {
-        background: linear-gradient(135deg, #1e3a5f 0%, #1a2332 100%);
-        border: 2px solid rgba(212, 175, 118, 0.2);
-        border-radius: 20px;
-        padding: 2.5rem;
-        min-height: 280px;
-        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 15px;
+        color: white;
+        height: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 1rem;
     }
     
     .assessment-card:hover {
-        border-color: rgba(212, 175, 118, 0.5);
         transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    }
-    
-    .assessment-number {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #d4af76;
-        letter-spacing: 2px;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
     }
     
     .assessment-title {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #ffffff;
         margin-bottom: 1rem;
+        color: white;
     }
     
     .assessment-description {
         font-size: 0.95rem;
-        color: #b8c4d6;
-        line-height: 1.7;
+        opacity: 0.9;
+        flex-grow: 1;
+        color: white;
     }
     
-    /* Section Headers */
-    .section-header {
-        text-align: center;
-        margin: 4rem 0 3rem 0;
-    }
-    
+    /* Section styling */
     .section-title {
         font-size: 2.5rem;
         font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 1rem;
+        text-align: center;
+        margin: 3rem 0 2rem 0;
+        color: #2d3748;
     }
     
     .section-subtitle {
+        text-align: center;
+        color: #666;
         font-size: 1.1rem;
-        color: #d4af76;
-        font-weight: 500;
+        margin-bottom: 3rem;
+    }
+    
+    /* Use case boxes */
+    .use-case-box {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .use-case-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+    
+    .use-case-box ul {
+        color: #666;
+    }
+    
+    .use-case-box li {
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* CTA section */
+    .cta-section {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        padding: 3rem;
+        border-radius: 20px;
+        text-align: center;
+        color: white;
+        margin: 3rem 0;
+    }
+    
+    .cta-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: white;
     }
     
     /* Footer */
-    .footer {
+    .custom-footer {
         text-align: center;
-        padding: 4rem 2rem;
-        color: #b8c4d6;
-        max-width: 800px;
-        margin: 4rem auto 0 auto;
-        border-top: 1px solid rgba(212, 175, 118, 0.2);
+        padding: 2rem;
+        color: #666;
+        margin-top: 3rem;
+        background: white;
+        border-radius: 15px;
     }
     
-    .footer-links a {
-        color: #d4af76;
+    .custom-footer strong {
+        color: #2d3748;
+    }
+    
+    .custom-footer a {
+        color: #667eea;
         text-decoration: none;
-        margin: 0 1.5rem;
         font-weight: 600;
-        transition: color 0.2s ease;
     }
     
-    .footer-links a:hover {
-        color: #e8c589;
+    .custom-footer a:hover {
+        color: #764ba2;
+    }
+    
+    /* Buttons */
+    .stButton>button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
     
     /* Download Buttons */
     .stDownloadButton>button {
-        background: rgba(212, 175, 118, 0.15);
-        color: #d4af76;
-        border: 2px solid rgba(212, 175, 118, 0.3);
-        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
         font-size: 0.9rem;
         font-weight: 600;
-        border-radius: 12px;
+        border-radius: 10px;
         transition: all 0.3s ease;
     }
     
     .stDownloadButton>button:hover {
-        background: rgba(212, 175, 118, 0.25);
-        border-color: #d4af76;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
     
-    /* Responsive */
+    /* Responsive Design */
     @media (max-width: 768px) {
         .hero-title {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
         }
         
-        .feature-badge {
-            padding: 1rem 1.5rem;
+        .hero-subtitle {
+            font-size: 1.1rem;
         }
         
-        .feature-text {
+        .hero-description {
+            font-size: 0.95rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+        
+        .feature-card,
+        .assessment-card,
+        .use-case-box {
+            margin-bottom: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        
+        .hero-subtitle {
             font-size: 1rem;
         }
         
-        .assessment-grid {
-            grid-template-columns: 1fr;
+        .hero-description {
+            font-size: 0.9rem;
         }
     }
 </style>
@@ -311,101 +317,177 @@ def load_trees():
 
 
 def show_landing_page():
-    """Dark elegant landing page"""
+    """Display the colorful professional landing page"""
     
-    # Use columns to center the button
-    col1, col2, col3 = st.columns([1, 2, 1])
-    
-    with col2:
-        st.markdown("""
-        <div class='hero-container'>
-            <div class='hero-content'>
-                <div class='hero-logo'>🎯</div>
-                
-                <h1 class='hero-title'>DecisionGuide</h1>
-                
-                <p class='hero-subtitle'>Open-Source Assessment For GRC Professionals</p>
-                
-                <div class='feature-badges'>
-                    <div class='feature-badge'>
-                        <div class='feature-icon'>🌳</div>
-                        <div class='feature-text'>Structured Assessment Logic</div>
-                    </div>
-                    
-                    <div class='feature-badge'>
-                        <div class='feature-icon'>📋</div>
-                        <div class='feature-text'>Research-Backed Frameworks</div>
-                    </div>
-                    
-                    <div class='feature-badge'>
-                        <div class='feature-icon'>🛡️</div>
-                        <div class='feature-text'>Consistent, Defensible Decisions</div>
-                    </div>
-                </div>
-                
-                <p class='hero-description'>
-                    Make clearer GRC judgments with guided assessment flows 
-                    (ISO 27001, GDPR, NIST CSF) based on industry research.
-                </p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Button below the hero content
-        if st.button("Start an Assessment", key="main_cta", use_container_width=True):
-            st.session_state.show_selection = True
-            st.rerun()
-
-
-def show_assessment_selection():
-    """Show assessment selection page"""
-    
-    # Back button
-    if st.button("← Back to Home"):
-        st.session_state.show_selection = False
-        st.rerun()
-    
+    # Hero Section
     st.markdown("""
-    <div class='section-header'>
-        <h2 class='section-title'>Choose an Assessment</h2>
-        <p class='section-subtitle'>Select a framework to begin</p>
+    <div class='hero-section'>
+        <div class='hero-title'>🎯 DecisionGuide</div>
+        <div class='hero-subtitle'>Open-source assessment framework for GRC professionals</div>
+        <div class='hero-description'>
+            Make consistent, defensible decisions through structured logic flows. 
+            Built with empathy for professionals who need clarity in complex assessments.
+        </div>
     </div>
     """, unsafe_allow_html=True)
     
+    # Feature Cards
+    st.markdown("<div class='section-title'>Why DecisionGuide?</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-subtitle'>Everything you need for professional GRC assessments</div>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class='feature-card'>
+            <div class='feature-icon'>🔍</div>
+            <div class='feature-title'>Transparent Logic</div>
+            <div class='feature-text'>
+                See exactly how decisions are reached with clear, step-by-step reasoning. 
+                Every path is documented and traceable.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class='feature-card'>
+            <div class='feature-icon'>🔒</div>
+            <div class='feature-title'>Privacy First</div>
+            <div class='feature-text'>
+                Zero-document approach means no file uploads, no data collection. 
+                All processing happens locally in your browser.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div class='feature-card'>
+            <div class='feature-icon'>📄</div>
+            <div class='feature-title'>Audit Ready</div>
+            <div class='feature-text'>
+                Export professional reports in PDF, JSON, or TXT formats. 
+                Complete audit trails for compliance documentation.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # Available Assessments
+    st.markdown("<div class='section-title'>📋 Available Assessments</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-subtitle'>Choose an assessment to get started</div>", unsafe_allow_html=True)
+    
     trees = load_trees()
     
-    # Use Streamlit columns with HTML cards
-    cols = st.columns(3)
-    assessment_numbers = ["Assessment 01", "Assessment 02", "Assessment 03"]
+    # Create gradient colors for cards
+    gradients = [
+        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+        "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+    ]
+    
+    cols = st.columns(min(len(trees), 3))
     
     for idx, (tree_id, tree_data) in enumerate(trees.items()):
         with cols[idx % 3]:
+            gradient = gradients[idx % len(gradients)]
+            
             st.markdown(f"""
-            <div class='assessment-card'>
-                <div class='assessment-number'>{assessment_numbers[idx]}</div>
-                <h3 class='assessment-title'>{tree_data.get('title', 'Assessment')}</h3>
-                <p class='assessment-description'>{tree_data.get('description', '')}</p>
+            <div class='assessment-card' style='background: {gradient};'>
+                <div>
+                    <div class='assessment-title'>{tree_data.get('title', 'Assessment')}</div>
+                    <div class='assessment-description'>{tree_data.get('description', '')}</div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
             
-            if st.button(f"Begin Assessment", key=f"start_{tree_id}", use_container_width=True):
+            if st.button(f"Start Assessment →", key=f"start_{tree_id}", use_container_width=True):
                 st.session_state.selected_tree = tree_id
                 st.session_state.show_landing = False
-                st.session_state.show_selection = False
                 st.rerun()
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Use Cases Section
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>🎯 Who Is This For?</div>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class='use-case-box'>
+            <div class='use-case-title'>👨‍💼 For Auditors</div>
+            <ul>
+                <li>Standardize assessment approaches across teams</li>
+                <li>Generate consistent, defensible decisions</li>
+                <li>Produce audit-ready documentation instantly</li>
+            </ul>
+        </div>
+        
+        <div class='use-case-box'>
+            <div class='use-case-title'>📊 For Risk Managers</div>
+            <ul>
+                <li>Classify vendors systematically</li>
+                <li>Tier risks consistently across organization</li>
+                <li>Document decision rationale clearly</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class='use-case-box'>
+            <div class='use-case-title'>✅ For Compliance Teams</div>
+            <ul>
+                <li>Determine regulatory requirements quickly</li>
+                <li>Apply jurisdiction-specific rules accurately</li>
+                <li>Maintain complete audit trails</li>
+            </ul>
+        </div>
+        
+        <div class='use-case-box'>
+            <div class='use-case-title'>🛡️ For Security Teams</div>
+            <ul>
+                <li>Assess incident severity objectively</li>
+                <li>Make reporting decisions confidently</li>
+                <li>Document incident response choices</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # CTA Section
+    st.markdown("""
+    <div class='cta-section'>
+        <div class='cta-title'>Ready to Make Better Decisions?</div>
+        <p style='font-size: 1.1rem; margin-bottom: 1.5rem; color: white;'>
+            Join GRC professionals using DecisionGuide for consistent, defensible assessments
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Footer
     st.markdown("""
-    <div class='footer'>
-        <p style='font-size: 1.1rem; margin-bottom: 1.5rem;'>
-            <strong style='color: #ffffff;'>DecisionGuide</strong> — Making structured, smart decisions, one at a time.
+    <div class='custom-footer'>
+        <p style='font-size: 1.1rem; margin-bottom: 0.5rem;'>
+            <strong>DecisionGuide: Making structured, smart decisions—one at a time.</strong>
         </p>
-        <div class='footer-links'>
-            <a href='https://github.com/Adeshola3/DecisionGuide' target='_blank'>⭐ GitHub</a>
-            <a href='https://github.com/Adeshola3/DecisionGuide/issues' target='_blank'>💬 Contribute</a>
-        </div>
-        <p style='margin-top: 1.5rem; font-size: 0.9rem; color: #6b7280;'>
-            Open Source • MIT License
+        <p style='margin-bottom: 1rem; color: #666;'>
+            Built with empathy for students and professionals who need clarity in complex assessments.
+        </p>
+        <p>
+            <a href='https://github.com/Adeshola3/DecisionGuide' target='_blank'>
+                ⭐ Star on GitHub
+            </a>
+            &nbsp;|&nbsp;
+            <a href='https://github.com/Adeshola3/DecisionGuide/issues' target='_blank'>
+                💬 Contribute
+            </a>
+        </p>
+        <p style='margin-top: 1.5rem; font-size: 0.9rem; color: #999;'>
+            Open source • MIT License • Made with 💙
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -468,8 +550,8 @@ def show_assessment_page():
     trees = load_trees()
     
     # Back button
-    if st.button("← Back to Selection"):
-        st.session_state.show_selection = True
+    if st.button("← Back to Home"):
+        st.session_state.show_landing = True
         st.session_state.pop('selected_tree', None)
         st.rerun()
     
@@ -521,13 +603,13 @@ def show_assessment_page():
         result = st.session_state[result_key]
         
         st.markdown("### Result")
-        st.write(f"**Decision:** {result['decision']}")
+        st.write(f"**Decision code:** {result['decision']}")
         if result['explanation']:
             st.write(result['explanation'])
 
-        st.markdown("### Decision Path")
+        st.markdown("### Path taken")
         for step in result['path']:
-            st.write(f"→ {step}")
+            st.write(f"- {step}")
         
         st.markdown("---")
         st.markdown("### Export Options")
@@ -542,7 +624,7 @@ def show_assessment_page():
                 result['path']
             )
             st.download_button(
-                label="📄 PDF",
+                label="📄 Download PDF",
                 data=pdf_buffer,
                 file_name=get_filename(tree.get("title", "Assessment"), "pdf"),
                 mime="application/pdf"
@@ -556,7 +638,7 @@ def show_assessment_page():
                 result['path']
             )
             st.download_button(
-                label="📋 JSON",
+                label="📋 Download JSON",
                 data=json_data,
                 file_name=get_filename(tree.get("title", "Assessment"), "json"),
                 mime="application/json"
@@ -570,14 +652,14 @@ def show_assessment_page():
                 result['path']
             )
             st.download_button(
-                label="📝 TXT",
+                label="📝 Download TXT",
                 data=text_data,
                 file_name=get_filename(tree.get("title", "Assessment"), "txt"),
                 mime="text/plain"
             )
         
         with col4:
-            if st.button("🔄 Restart"):
+            if st.button("🔄 Start over"):
                 st.session_state[answers_key] = {}
                 st.session_state[result_key] = None
                 st.rerun()
@@ -587,13 +669,8 @@ def main():
     if 'show_landing' not in st.session_state:
         st.session_state.show_landing = True
     
-    if 'show_selection' not in st.session_state:
-        st.session_state.show_selection = False
-    
-    if st.session_state.show_landing and not st.session_state.show_selection:
+    if st.session_state.show_landing:
         show_landing_page()
-    elif st.session_state.show_selection:
-        show_assessment_selection()
     else:
         show_assessment_page()
 
