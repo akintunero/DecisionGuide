@@ -15,12 +15,13 @@ st.set_page_config(
 
 # Custom CSS for professional styling
 st.markdown("""
+st.markdown("""
 <style>
     /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Light background instead of gradient */
+    /* Light background */
     .stApp {
         background: #fafafa;
     }
@@ -37,26 +38,28 @@ st.markdown("""
     }
     
     .hero-title {
-        font-size: 3.5rem;
+        font-size: 2.8rem;
         font-weight: 800;
         margin-bottom: 1rem;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         color: white;
+        word-wrap: break-word;
     }
     
     .hero-subtitle {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         margin-bottom: 1rem;
         opacity: 0.95;
         color: white;
     }
     
     .hero-description {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         max-width: 700px;
         margin: 0 auto;
         opacity: 0.9;
         color: white;
+        line-height: 1.6;
     }
     
     /* Feature cards */
@@ -125,7 +128,7 @@ st.markdown("""
         color: white;
     }
     
-    /* Section styling - FIXED COLORS */
+    /* Section styling */
     .section-title {
         font-size: 2.5rem;
         font-weight: 700;
@@ -224,9 +227,47 @@ st.markdown("""
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .hero-description {
+            font-size: 0.95rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+        
+        .feature-card,
+        .assessment-card,
+        .use-case-box {
+            margin-bottom: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        
+        .hero-description {
+            font-size: 0.9rem;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
-
 
 LOGIC_DIR = Path(__file__).parent / "logic"
 
