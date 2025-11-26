@@ -91,26 +91,6 @@ st.markdown("""
         z-index: 1;
     }
     
-    .cta-button {
-        display: inline-block;
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: white;
-        padding: 1rem 3rem;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
-        position: relative;
-        z-index: 1;
-    }
-    
-    .cta-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
-    }
-    
     /* Feature Cards Section */
     .features-section {
         background: #0f172a;
@@ -184,15 +164,7 @@ st.markdown("""
     /* Assessment Cards */
     .assessments-section {
         background: #0a0e27;
-        padding: 5rem 2rem;
-    }
-    
-    .assessment-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
+        padding: 5rem 2rem 2rem 2rem;
     }
     
     .assessment-card {
@@ -206,6 +178,7 @@ st.markdown("""
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
+        margin-bottom: 1rem;
     }
     
     .assessment-card::before {
@@ -297,8 +270,7 @@ st.markdown("""
     
     /* Responsive */
     @media (max-width: 768px) {
-        .feature-grid,
-        .assessment-grid {
+        .feature-grid {
             grid-template-columns: 1fr;
         }
         
@@ -379,41 +351,34 @@ def show_landing_page():
     </div>
     """, unsafe_allow_html=True)
     
-    # Assessments Section
+    # Assessments Section Header
     st.markdown("""
     <div class='assessments-section'>
         <h2 class='section-title'>Available Assessments</h2>
         <p class='section-subtitle'>Choose a framework to begin your evaluation</p>
+    </div>
     """, unsafe_allow_html=True)
     
+    # Assessment Cards with Streamlit columns
     trees = load_trees()
     assessment_numbers = ["01", "02", "03"]
     
-    # Assessment cards HTML
-    cards_html = "<div class='assessment-grid'>"
-    for idx, (tree_id, tree_data) in enumerate(trees.items()):
-        cards_html += f"""
-        <div class='assessment-card'>
-            <div class='assessment-number'>{assessment_numbers[idx] if idx < len(assessment_numbers) else f"0{idx+1}"}</div>
-            <div class='assessment-title'>{tree_data.get('title', 'Assessment')}</div>
-            <div class='assessment-description'>{tree_data.get('description', '')}</div>
-        </div>
-        """
-    cards_html += "</div>"
+    cols = st.columns(3)
     
-    st.markdown(cards_html, unsafe_allow_html=True)
-    
-    # Buttons
-    st.markdown("<br>", unsafe_allow_html=True)
-    cols = st.columns(len(trees))
     for idx, (tree_id, tree_data) in enumerate(trees.items()):
-        with cols[idx]:
+        with cols[idx % 3]:
+            st.markdown(f"""
+            <div class='assessment-card'>
+                <div class='assessment-number'>{assessment_numbers[idx]}</div>
+                <div class='assessment-title'>{tree_data.get('title', 'Assessment')}</div>
+                <div class='assessment-description'>{tree_data.get('description', '')}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
             if st.button(f"Start Assessment →", key=f"start_{tree_id}", use_container_width=True):
                 st.session_state.selected_tree = tree_id
                 st.session_state.show_landing = False
                 st.rerun()
-    
-    st.markdown("</div>", unsafe_allow_html=True)
     
     # Footer
     st.markdown("""
@@ -491,6 +456,7 @@ def show_assessment_page():
     """Display the assessment page"""
     trees = load_trees()
     
+    # Back button
     if st.button("← Back to Home"):
         st.session_state.show_landing = True
         st.session_state.pop('selected_tree', None)
