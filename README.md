@@ -151,13 +151,39 @@ We welcome contributions! Here’s how you can help:
 **Option 2: Submit via form**
 *(Coming soon)* Fill out our contribution form—no coding required!
 
-### Contribution Ideas
+## 🌟 Contribution Ideas
 
-- 🌲 New assessment frameworks (ISO 27001 controls, SOC2 requirements, etc.)
-- 🐛 Bug fixes and improvements
-- 📚 Documentation and examples
-- 🌍 Translations and localization
-- 🎨 UI/UX enhancements
+Here are practical ways you can contribute to DecisionGuide:
+
+- 🌲 **Add new decision trees**  
+  Examples: access reviews, encryption checks, DPIA deep-dive branches, data-retention logic, onboarding/offboarding checks, vendor risk workflows.  
+  Just create a new JSON file under `/logic`.
+
+- 🔧 **Refactor or enhance existing trees**  
+  Improve clarity, strengthen logic, refine explanations, or map decisions more accurately to frameworks.
+
+- 📚 **Improve documentation**  
+  Add walkthroughs, examples, JSON schema explanations, or better guidance for contributors.
+
+- 🐛 **Fix bugs or improve code quality**  
+  Optimise the Python functions, improve error handling, simplify the decision engine, or enhance state management.
+
+- 🎨 **UI/UX enhancements**  
+  Better layout, improved spacing, summaries, breadcrumbs, multi-step navigation, or accessibility improvements.
+
+- 🧪 **Add tests**  
+  Create unit tests under `/tests` for tree traversal, JSON validation, and decision correctness.
+
+- 🌍 **Jurisdiction-specific modules**  
+  Add UK GDPR, EU GDPR, NDPR, HIPAA, CPRA, or industry-specific guidance displayed after a decision is reached.
+
+- 🚀 **Feature contributions**  
+  Enhanced export options, history tracking, evidence bundles, or integrations as the project evolves.
+
+---
+
+Feel free to open issues, submit PRs, or suggest improvements.  
+Every contribution helps make DecisionGuide more useful to the GRC community!
 
 ### Guidelines
 
