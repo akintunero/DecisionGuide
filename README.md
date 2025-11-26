@@ -18,7 +18,7 @@ DecisionGuide helps governance, risk, and compliance (GRC) professionals make **
 Risk and compliance teams often make inconsistent decisions because there's no standardized framework. Same vendor, different auditors, different outcomes.
 
 **The Solution:**  
-Research-backed assessment logic (ISO 27001, GDPR, NIST CSF) that guides—not automates—professional judgment.
+Research-backed assessment logic (ISO 27001, GDPR, NIST CSF) that guides not automates professional judgment.
 
 ### Why DecisionGuide?
 
