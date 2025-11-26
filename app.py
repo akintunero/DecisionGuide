@@ -20,13 +20,9 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Custom color scheme */
-    .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
+    /* Light background instead of gradient */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: #fafafa;
     }
     
     /* Hero section styling */
@@ -45,12 +41,14 @@ st.markdown("""
         font-weight: 800;
         margin-bottom: 1rem;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        color: white;
     }
     
     .hero-subtitle {
         font-size: 1.5rem;
         margin-bottom: 1rem;
         opacity: 0.95;
+        color: white;
     }
     
     .hero-description {
@@ -58,6 +56,7 @@ st.markdown("""
         max-width: 700px;
         margin: 0 auto;
         opacity: 0.9;
+        color: white;
     }
     
     /* Feature cards */
@@ -105,6 +104,7 @@ st.markdown("""
         justify-content: space-between;
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         transition: transform 0.3s ease;
+        margin-bottom: 1rem;
     }
     
     .assessment-card:hover {
@@ -115,15 +115,17 @@ st.markdown("""
         font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 1rem;
+        color: white;
     }
     
     .assessment-description {
         font-size: 0.95rem;
         opacity: 0.9;
         flex-grow: 1;
+        color: white;
     }
     
-    /* Section styling */
+    /* Section styling - FIXED COLORS */
     .section-title {
         font-size: 2.5rem;
         font-weight: 700;
@@ -156,6 +158,15 @@ st.markdown("""
         margin-bottom: 0.5rem;
     }
     
+    .use-case-box ul {
+        color: #666;
+    }
+    
+    .use-case-box li {
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
     /* CTA section */
     .cta-section {
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -170,6 +181,7 @@ st.markdown("""
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 1rem;
+        color: white;
     }
     
     /* Footer */
@@ -178,6 +190,22 @@ st.markdown("""
         padding: 2rem;
         color: #666;
         margin-top: 3rem;
+        background: white;
+        border-radius: 15px;
+    }
+    
+    .custom-footer strong {
+        color: #2d3748;
+    }
+    
+    .custom-footer a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .custom-footer a:hover {
+        color: #764ba2;
     }
     
     /* Buttons */
@@ -362,7 +390,7 @@ def show_landing_page():
     st.markdown("""
     <div class='cta-section'>
         <div class='cta-title'>Ready to Make Better Decisions?</div>
-        <p style='font-size: 1.1rem; margin-bottom: 1.5rem;'>
+        <p style='font-size: 1.1rem; margin-bottom: 1.5rem; color: white;'>
             Join GRC professionals using DecisionGuide for consistent, defensible assessments
         </p>
     </div>
@@ -374,17 +402,15 @@ def show_landing_page():
         <p style='font-size: 1.1rem; margin-bottom: 0.5rem;'>
             <strong>DecisionGuide: Making structured, smart decisions—one at a time.</strong>
         </p>
-        <p style='margin-bottom: 1rem;'>
+        <p style='margin-bottom: 1rem; color: #666;'>
             Built with empathy for students and professionals who need clarity in complex assessments.
         </p>
         <p>
-            <a href='https://github.com/Adeshola3/DecisionGuide' target='_blank' 
-               style='color: #667eea; text-decoration: none; font-weight: 600;'>
+            <a href='https://github.com/Adeshola3/DecisionGuide' target='_blank'>
                 ⭐ Star on GitHub
             </a>
             &nbsp;|&nbsp;
-            <a href='https://github.com/Adeshola3/DecisionGuide/issues' target='_blank' 
-               style='color: #667eea; text-decoration: none; font-weight: 600;'>
+            <a href='https://github.com/Adeshola3/DecisionGuide/issues' target='_blank'>
                 💬 Contribute
             </a>
         </p>
