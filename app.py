@@ -39,40 +39,55 @@ st.markdown("""
         color: #1565c0 !important;
     }
     
-    /* Hero section styling */
+    /* Hero section styling - BIG CENTERED */
     .hero-section {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 4rem 2rem;
+        padding: 6rem 2rem;
         border-radius: 20px;
         text-align: center;
         color: white;
         margin-bottom: 3rem;
         box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .hero-content {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .hero-logo {
+        font-size: 8rem;
+        margin-bottom: 2rem;
+        filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
     }
     
     .hero-title {
-        font-size: 3rem;
+        font-size: 5rem;
         font-weight: 800;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        margin-bottom: 2rem;
         color: white;
-        word-wrap: break-word;
+        letter-spacing: -2px;
     }
     
     .hero-subtitle {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
         opacity: 0.95;
         color: white;
+        line-height: 1.6;
     }
     
     .hero-description {
-        font-size: 1.05rem;
-        max-width: 700px;
+        font-size: 1.15rem;
+        max-width: 800px;
         margin: 0 auto;
         opacity: 0.9;
         color: white;
-        line-height: 1.6;
+        line-height: 1.8;
     }
     
     /* Feature cards */
@@ -260,16 +275,20 @@ st.markdown("""
     
     /* Responsive Design */
     @media (max-width: 768px) {
+        .hero-logo {
+            font-size: 5rem;
+        }
+        
         .hero-title {
-            font-size: 2.2rem;
+            font-size: 3rem;
         }
         
         .hero-subtitle {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
         
         .hero-description {
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
         
         .section-title {
@@ -284,8 +303,12 @@ st.markdown("""
     }
     
     @media (max-width: 480px) {
+        .hero-logo {
+            font-size: 4rem;
+        }
+        
         .hero-title {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
         }
         
         .hero-subtitle {
@@ -319,14 +342,17 @@ def load_trees():
 def show_landing_page():
     """Display the colorful professional landing page"""
     
-    # Hero Section
+    # Hero Section - BIG CENTERED LIKE IMAGE 1
     st.markdown("""
     <div class='hero-section'>
-        <div class='hero-title'>🎯 DecisionGuide</div>
-        <div class='hero-subtitle'>Open-source assessment framework for GRC professionals</div>
-        <div class='hero-description'>
-            Make consistent, defensible decisions through structured logic flows. 
-            Built with empathy for professionals who need clarity in complex assessments.
+        <div class='hero-content'>
+            <div class='hero-logo'>🎯</div>
+            <div class='hero-title'>DecisionGuide</div>
+            <div class='hero-subtitle'>Open-source assessment framework for GRC professionals</div>
+            <div class='hero-description'>
+                Make consistent, defensible decisions through structured logic flows. 
+                Built with empathy for professionals who need clarity in complex assessments.
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
