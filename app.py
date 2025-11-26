@@ -1,3 +1,73 @@
+import json
+from pathlib import Path
+
+import streamlit as st
+
+
+st.set_page_config(page_title="DecisionGuide", layout="centered")
+
+
+LOGIC_DIR = Path(__file__).parent / "logic"
+
+
+def load_trees():
+    trees = {}
+    for path in LOGIC_DIR.glob("*.json"):
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+            tree_id = data.get("id") or path.stem
+            trees[tree_id] = data
+        except Exception as e:
+            # In production you might log this instead
+            print(f"Failed to load {path}: {e}")
+    return trees
+
+
+def traverse_tree(tree, node_id, path_prefix=""):
+    """
+    Recursively walk a decision tree defined in JSON.
+    Returns (decision_code, explanation, path_taken)
+    """
+    nodes = tree["nodes"]
+    node = nodes[node_id]
+
+    node_label = node.get("text", "")
+    if path_prefix:
+        display_label = f"{path_prefix} → {node_label}"
+    else:
+        display_label = node_label
+
+    node_type = node.get("type", "choice")
+
+    if node_type == "choice":
+        options = list(node["options"].keys())
+        choice = st.radio(display_label, options, key=f"{tree['id']}_{node_id}")
+        st.write("")  # small spacing
+
+        selected_branch = node["options"][choice]
+        path_entry = f"{node_label} → {choice}"
+
+        # If this branch leads directly to a decision
+        if "decision" in selected_branch:
+            decision = selected_branch["decision"]
+            explanation = selected_branch.get("explanation", "")
+            return decision, explanation, [path_entry]
+
+        # Otherwise, go to next node
+        next_node = selected_branch["next"]
+        decision, explanation, sub_path = traverse_tree(tree, next_node, path_prefix="")
+        return decision, explanation, [path_entry] + sub_path
+
+    elif node_type == "text":
+        st.markdown(display_label)
+        return None, None, [node_label]
+
+    else:
+        st.warning(f"Unknown node type: {node_type}")
+        return None, None, []
+
+
 def main():
     st.title("DecisionGuide")
     st.caption("One smart decision at a time.")
@@ -58,6 +128,6 @@ def main():
         for step in result['path']:
             st.write(f"- {step}")
 
-        # If this is the DPIA tree, show jurisdiction guidance after result
-        if selected_tree_id.startswith("dpia"):
-            render_jurisdiction_section()
+
+if __name__ == "__main__":
+    main()
