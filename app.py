@@ -67,7 +67,7 @@ st.markdown("""
     
     .hero-title {
         font-size: 5rem;
-        font-weight: 800;
+        font-weight: 900;
         margin-bottom: 2rem;
         color: white;
         letter-spacing: -2px;
@@ -79,6 +79,7 @@ st.markdown("""
         opacity: 0.95;
         color: white;
         line-height: 1.6;
+        font-weight: 400;
     }
     
     .hero-description {
@@ -88,6 +89,7 @@ st.markdown("""
         opacity: 0.9;
         color: white;
         line-height: 1.8;
+        font-weight: 400;
     }
     
     /* Feature cards */
@@ -342,7 +344,7 @@ def load_trees():
 def show_landing_page():
     """Display the colorful professional landing page"""
     
-    # Hero Section - BIG CENTERED LIKE IMAGE 1
+    # Hero Section - BIG CENTERED WITH BOLD TITLE
     st.markdown("""
     <div class='hero-section'>
         <div class='hero-content'>
