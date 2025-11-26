@@ -1,27 +1,48 @@
 {
-  "tree_name": "Incident Reporting",
+  "id": "incident_reporting",
+  "title": "Incident Reporting",
   "description": "Guides users through whether an incident should be reported.",
-  "start": "q1",
-  "questions": {
+  "root": "q1",
+  "nodes": {
     "q1": {
       "text": "Does the incident involve sensitive data?",
-      "yes": "q2",
-      "no": "q3"
+      "type": "choice",
+      "options": {
+        "Yes": {
+          "next": "q2"
+        },
+        "No": {
+          "next": "q3"
+        }
+      }
     },
     "q2": {
       "text": "Was the sensitive data exposed externally?",
-      "yes": "report",
-      "no": "consider"
+      "type": "choice",
+      "options": {
+        "Yes": {
+          "decision": "REPORT_REQUIRED",
+          "explanation": "This incident should be reported to relevant authorities and stakeholders immediately."
+        },
+        "No": {
+          "decision": "INTERNAL_REVIEW",
+          "explanation": "Document internally and review with security/compliance team. External reporting may not be required."
+        }
+      }
     },
     "q3": {
       "text": "Does the incident affect critical systems or operations?",
-      "yes": "report",
-      "no": "monitor"
+      "type": "choice",
+      "options": {
+        "Yes": {
+          "decision": "REPORT_REQUIRED",
+          "explanation": "This incident should be reported due to impact on critical systems."
+        },
+        "No": {
+          "decision": "MONITOR_ONLY",
+          "explanation": "No reporting required, continue monitoring. Document the incident for internal records."
+        }
+      }
     }
-  },
-  "outcomes": {
-    "report": "This incident should be reported...",
-    "consider": "Document internally and review...",
-    "monitor": "No reporting required, continue monitoring..."
   }
 }
