@@ -773,7 +773,7 @@ def show_landing_page():
     st.markdown("""
     <div class='hero-wrapper'>
         <div class='hero-content'>
-            <div class='hero-badge'>🎯 Open Source GRC Framework</div>
+            <div class='hero-badge'>🎯 Open Source GRC Assessment Tool</div>
             <h1 class='hero-title'>DecisionGuide</h1>
             <p class='hero-subtitle'>
                 Make consistent, defensible decisions through structured logic flows.<br>
