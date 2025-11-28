@@ -1025,7 +1025,7 @@ def show_assessment_page():
     # RISK SCORING INITIALIZATION - ADDED HERE
     # ============================================
     scoring_enabled = tree.get('scoring', {}).get('enabled', False)
-    scoring = none
+    scorer = none
     if scoring_enabled:
         scorer = RiskScorer(tree)
     # ============================================
