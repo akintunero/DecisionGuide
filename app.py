@@ -1238,4 +1238,13 @@ def main():
 
 
 if __name__ == "__main__":
+    
+if __name__ == "__main__":
+    # Test if risk_scoring imports correctly
+    try:
+        from risk_scoring import RiskScorer
+        print("✅ RiskScorer imported successfully!")
+    except Exception as e:
+        print(f"❌ Error importing RiskScorer: {e}")
+    
     main()
