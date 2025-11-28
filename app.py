@@ -1025,17 +1025,9 @@ def show_assessment_page():
     # RISK SCORING INITIALIZATION - ADDED HERE
     # ============================================
     scoring_enabled = tree.get('scoring', {}).get('enabled', False)
+    scoring = none
     if scoring_enabled:
         scorer = RiskScorer(tree)
-        # Get current answers for this assessment
-        answers_key = f"answers_{selected_tree_id}"
-        if answers_key in st.session_state:
-            # Convert answers dict to list format for scorer
-            answer_list = [
-                {'node_id': node_id, 'choice': choice, 'question': tree['nodes'][node_id]['text']}
-                for node_id, choice in st.session_state[answers_key].items()
-            ]
-            display_current_risk_score(scorer, answer_list)
     # ============================================
     
     # Assessment header
@@ -1058,14 +1050,24 @@ def show_assessment_page():
     
     if result_key not in st.session_state:
         st.session_state[result_key] = None
-
     answers = st.session_state[answers_key]
+    
+    # Display current risk score after each answer
+    if scoring_enabled and scorer and answers:
+        answer_list = [
+            {'node_id': node_id, 'choice': choice, 'question': tree['nodes'][node_id].get('text', '')}
+            for node_id, choice in answers.items()
+        ]
+        display_current_risk_score(scorer, answer_list)
+    
     decision, explanation, path = traverse_tree_interactive(
         tree, 
         tree["root"], 
         answers, 
         []
     )
+
+
 
     if decision is not None:
         st.session_state[result_key] = {
