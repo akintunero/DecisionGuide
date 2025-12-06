@@ -283,54 +283,33 @@ def show_assessment_page():
         tab1, tab2, tab3 = st.tabs(["History", "Search", "Analytics"])
         
         with tab1:
-            st.subheader("Assessment History")
+            st.subheader("Recent assessments")
             history = get_recent_history(limit=50)
 
             if history:
-                # Enhanced filters with date range
+                # Simple filters
                 tree_ids = sorted({h.get("tree_id") for h in history if h.get("tree_id")})
                 decisions = sorted({h.get("decision") for h in history if h.get("decision")})
-                
                 col_f1, col_f2 = st.columns(2)
                 with col_f1:
                     selected_tree = st.selectbox(
                         "Filter by tree",
                         options=["(All)"] + tree_ids,
                         index=0,
-                        key="history_filter_tree"
                     )
                 with col_f2:
                     selected_decision = st.selectbox(
                         "Filter by decision",
                         options=["(All)"] + decisions,
                         index=0,
-                        key="history_filter_decision"
                     )
-                
-                # Date range filter
-                col_d1, col_d2 = st.columns(2)
-                with col_d1:
-                    date_from = st.date_input("From date", value=None, key="history_date_from")
-                with col_d2:
-                    date_to = st.date_input("To date", value=None, key="history_date_to")
 
                 filtered_history = []
                 for entry in history:
-                    # Tree filter
                     if selected_tree != "(All)" and entry.get("tree_id") != selected_tree:
                         continue
-                    # Decision filter
                     if selected_decision != "(All)" and entry.get("decision") != selected_decision:
                         continue
-                    # Date range filter
-                    try:
-                        entry_date = datetime.fromisoformat(entry.get("timestamp", "")).date()
-                        if date_from and entry_date < date_from:
-                            continue
-                        if date_to and entry_date > date_to:
-                            continue
-                    except (ValueError, AttributeError):
-                        pass
                     filtered_history.append(entry)
 
                 # Table view
@@ -390,50 +369,21 @@ def show_assessment_page():
         
         with tab3:
             if Config.ENABLE_ANALYTICS:
-                st.subheader("Analytics Dashboard")
+                st.subheader("Analytics")
                 stats = get_statistics()
                 if stats.get("total_assessments", 0) > 0:
-                    # Key metrics in columns
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("Total Assessments", stats["total_assessments"])
-                    with col2:
-                        st.metric("Recent Activity (7 days)", stats.get("recent_activity_count", 0))
-                    with col3:
-                        most_used = stats.get("most_used_tree", "N/A")
-                        st.metric("Most Used Tree", most_used[:20] + "..." if len(str(most_used)) > 20 else most_used)
+                    st.metric("Total Assessments", stats["total_assessments"])
+                    st.metric("Recent Activity (7 days)", stats.get("recent_activity_count", 0))
                     
-                    st.markdown("---")
-                    
-                    # Tree usage chart
                     if stats.get("tree_usage"):
-                        st.subheader("Tree Usage")
-                        tree_usage_data = dict(list(stats["tree_usage"].items())[:10])
-                        st.bar_chart(tree_usage_data)
-                    
-                    # Decision distribution
-                    if stats.get("decision_distribution"):
-                        st.subheader("Decision Distribution")
-                        decision_data = dict(list(stats["decision_distribution"].items())[:10])
-                        st.bar_chart(decision_data)
-                    
-                    # Daily activity
-                    if stats.get("daily_activity"):
-                        st.subheader("Daily Activity")
-                        daily_data = stats["daily_activity"]
-                        st.line_chart(daily_data)
+                        st.write("Tree usage (top 5):")
+                        for tree_id, count in list(stats["tree_usage"].items())[:5]:
+                            st.caption(f"{tree_id}: {count}")
                 else:
-                    st.info("No statistics available yet. Complete some assessments to see analytics.")
+                    st.info("No statistics available yet")
     
-    # Back button - clear all assessment state when going back
+    # Back button
     if st.button("Back to Home", key="back_btn"):
-        selected_tree_id = st.session_state.get('selected_tree')
-        if selected_tree_id:
-            # Clear all state for this assessment
-            st.session_state.pop(f"answers_{selected_tree_id}", None)
-            st.session_state.pop(f"result_{selected_tree_id}", None)
-            st.session_state.pop(f"path_{selected_tree_id}", None)
-            st.session_state.pop(f"node_history_{selected_tree_id}", None)
         st.session_state.show_landing = True
         st.session_state.pop('selected_tree', None)
         st.rerun()
@@ -483,16 +433,10 @@ def show_assessment_page():
         nodes = tree.get("nodes", {})
 
         def _short_label_for_id(n_id: str) -> str:
-            """Get short label for breadcrumb, preferring 'label' field over 'text'."""
             node_data = nodes.get(n_id, {})
-            # Prefer 'label' field if available (shorter), otherwise use 'text'
             raw = node_data.get("label") or node_data.get("text") or n_id
             text = sanitize_input(str(raw))
-            # If using 'text' field, make it shorter; if 'label', keep as is (assumed short)
-            if node_data.get("label"):
-                return text[:30]  # Label field, keep short
-            else:
-                return (text[:25] + "...") if len(text) > 25 else text  # Text field, truncate more
+            return (text[:40] + "...") if len(text) > 40 else text
 
         labels = [
             f"{idx + 1}. {_short_label_for_id(n_id)}"
@@ -545,17 +489,10 @@ def show_assessment_page():
 
     # Progress indicator (recomputed so it reflects latest state)
     current_step, total_steps, progress = calculate_progress(tree, answers)
-    
-    # If decision is reached, show 100% progress
-    if decision is not None:
-        if total_steps > 0:
-            progress = 100.0
-            current_step = total_steps
-        else:
-            # If no questions but decision reached, still show complete
-            progress = 100.0
-            current_step = 1
-            total_steps = 1
+    if decision is not None and total_steps > 0:
+        # When a decision is reached, treat progress as complete
+        progress = 100.0
+        current_step = total_steps
 
     if total_steps > 0:
         st.progress(
@@ -622,27 +559,17 @@ def show_assessment_page():
             except Exception:
                 risk_score_data = None
 
-        # Result Display with Risk Score
-        risk_score_html = ""
+        # Inline risk summary in the result card area
         if risk_score_data:
-            risk_level_color = {
-                "Low": "#4caf50",
-                "Medium": "#ff9800", 
-                "High": "#f44336",
-                "Critical": "#d32f2f"
-            }.get(risk_score_data['level'], "#ffffff")
-            risk_score_html = f"""
-            <div style='background: #2a2a2a; border-left: 4px solid {risk_level_color}; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px;'>
-                <strong style='color: #ffffff;'>Risk Score:</strong> 
-                <span style='color: {risk_level_color}; font-size: 1.2rem; font-weight: bold;'>{risk_score_data['score']}/100</span>
-                <span style='color: #b0b0b0; margin-left: 1rem;'>({risk_score_data['level']} Risk)</span>
-            </div>
-            """
-        
+            st.markdown("#### Risk summary")
+            st.write(f"Score: {risk_score_data['score']} / 100")
+            st.write(f"Level: {risk_score_data['level']}")
+            st.markdown("<br>", unsafe_allow_html=True)
+
+        # Result Display
         st.markdown(f"""
         <div class='result-card'>
             <span class='result-badge'>Final Decision</span>
-            {risk_score_html}
             <h3 style='font-size: 1.5rem; margin-bottom: 1rem; color: #ffffff;'>{result['decision']}</h3>
             {f"<p style='color: #b0b0b0; font-size: 1rem; line-height: 1.6;'>{result['explanation']}</p>" if result['explanation'] else ""}
         </div>
